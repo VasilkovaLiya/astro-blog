@@ -1,0 +1,59 @@
+---
+import { client } from '../../lib/sanity';
+import BlogPost from '../../layouts/BlogPost.astro'
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import BaseHead from '../../components/BaseHead.astro';
+
+//const { slug } = Astro.params;
+
+export async function getStaticPaths() {
+    const posts = await client.fetch(`
+    *[_type == "blogPost" && defined(slug.current)]{
+      "slug": slug.current
+    }
+  `);
+
+    return posts.map((post) => ({
+        params: { slug: post.slug },
+        props: { slug: post.slug },
+    }));
+}
+const { slug } = Astro.props;
+
+const post = await client.fetch(
+    `*[_type == "blogPost" && slug.current == $slug][0]{
+    title,
+    publishedAt,
+    mainImage {
+      asset->{
+        url
+      }
+    },
+    body
+  }`,
+    { slug }
+);
+---
+
+<html lang="en">
+<head>
+    <BaseHead title={post.title} />
+</head>
+<body>
+<Header />
+<main>
+    <BlogPost
+            title={post.title}
+            date={post.publishedAt}
+            image={post.mainImage?.asset?.url}
+    >
+        <!-- Можно вставить отрендеренный RichText блок -->
+        {post.body?.map(block =>
+            block.children?.map(child => <p>{child.text}</p>)
+        )}
+    </BlogPost>
+</main>
+<Footer />
+</body>
+</html>
