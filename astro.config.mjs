@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://miniblog-67c.pages.dev',
-	integrations: [mdx(), sitemap()],
+	output: 'static',
+	//site: 'https://miniblog-67c.pages.dev',
+	//integrations: [mdx(), sitemap()],
 });
