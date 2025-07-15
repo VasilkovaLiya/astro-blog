@@ -5,13 +5,12 @@ import Footer from '../../components/Footer.astro';
 import { SITE_TITLE, SITE_DESCRIPTION } from '../../consts';
 //import { getCollection } from 'astro:content';
 import FormattedDate from '../../components/FormattedDate.astro';
-import { Image } from 'astro:assets';
 
-import { getAllPosts } from '../../lib/queries';
-import {client} from "../../lib/sanity";
 
-const posts = await client.fetch(getAllPosts);
-console.log('Sanity posts:', posts);
+const API_URL = 'https://correct-cow-1b995af80c.strapiapp.com/api';
+const response = await fetch(`${API_URL}/articles`);
+const { data } = await response.json();
+console.log('strapi posts:', data);
 ---
 
 <!doctype html>
@@ -94,12 +93,13 @@ console.log('Sanity posts:', posts);
 			<section>
 				<ul>
                   {
-					  posts.map((post) => {
+					  data.map((post) => {
 						  const date = post.publishedAt ? new Date(post.publishedAt) : null;
 						  return (
 							  <li>
-								  <a href={`/blog/${post.slug.current}/`}>
-									  {post.mainImage && <img src={post.mainImage.asset.url} width="100px" height="100px" alt="" />}
+								  <a href={`/blog/${post.slug}/`}>
+									 <!-- {post.mainImage && <img src={post.mainImage.asset.url} width="100px" height="100px" alt="" />}
+									  -->
 									  <h4 class="title">{post.title}</h4>
 									  <p class="date">
 										  {date ? <FormattedDate date={date} /> : 'Дата не указана'}
