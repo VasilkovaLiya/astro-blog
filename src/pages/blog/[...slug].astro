@@ -1,11 +1,13 @@
 ---
-import BlogPost from '../../layouts/BlogPost.astro';
+//import BlogPost from '../../layouts/BlogPost.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import BaseHead from '../../components/BaseHead.astro';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkHtml from 'remark-html';
+import BlogPost from '../../components/react/BlogPost';
+
 export async function getStaticPaths() {
   const API_URL = 'https://correct-cow-1b995af80c.strapiapp.com/api';
 
@@ -58,14 +60,20 @@ if (!article) {
   <body>
     <Header />
     <main>
-      <BlogPost
+      <BlogPost title={article.title} 
+      description={article.description} 
+      publishedAt={article.publishedAt} 
+      richTextContent={richTextContent} 
+      cover={article.cover}
+      />
+      <!-- <BlogPost
         title={article.title}
         date={article.publishedAt}
         image={article.mainImage?.asset?.url}
       >
-        <!-- Можно вставить отрендеренный RichText блок -->
+       
         {article.body?.map((block) => block.children?.map((child) => <p>{child.text}</p>))}
-      </BlogPost>
+      </BlogPost> -->
       <article>
         <h1>{article.title}</h1>
         <p class="description">{article.description}</p>
